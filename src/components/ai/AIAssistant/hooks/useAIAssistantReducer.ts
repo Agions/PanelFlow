@@ -15,6 +15,8 @@
  * 内部 setMessages(prev => ...) updater pattern 正常支持.
  */
 
+import { createFieldUpdater, type FieldUpdater as Updater } from '@/common/utils/reducer-helpers';
+
 import type { AIAssistantState, AIAssistantTab, ChatMessage } from '../types/ai-assistant-entities';
 
 // ─── Re-export State 类型 (供 useAIAssistant.ts 用) ────────────────────────
@@ -87,8 +89,6 @@ export function aiAssistantReducer(
 }
 
 // ─── Setter 工厂 ───────────────────────────────────────────────────────────
-
-import { createFieldUpdater, type FieldUpdater as Updater } from '@/common/utils/reducer-helpers';
 
 // ─── 18 setter wrap ────────────────────────────────────────────────────────
 

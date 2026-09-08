@@ -19,9 +19,6 @@ import {
 } from 'lucide-react';
 import { useState, useMemo, useDeferredValue } from 'react';
 
-import { MODEL_PROVIDERS } from '@/core/config/models-config';
-import { LLM_MODELS, type LLMModelConfig } from '@/core/constants';
-import { useModel, useModelCost, useRecommendedModel } from '@/core/hooks/useModel';
 import { Alert, AlertDescription } from '@/common/components/ui/alert';
 import { Avatar, AvatarFallback, AvatarImage } from '@/common/components/ui/avatar';
 import { Badge } from '@/common/components/ui/badge';
@@ -31,6 +28,9 @@ import { Input } from '@/common/components/ui/input';
 import { Separator } from '@/common/components/ui/separator';
 import { Tooltip } from '@/common/components/ui/tooltip';
 import type { ModelCategory, ModelProvider } from '@/common/types';
+import { MODEL_PROVIDERS } from '@/core/config/models-config';
+import { LLM_MODELS, type LLMModelConfig } from '@/core/constants';
+import { useModel, useModelCost, useRecommendedModel } from '@/core/hooks/useModel';
 
 import styles from './index.module.less';
 import { TruncatedDescription } from './TruncatedDescription';

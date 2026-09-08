@@ -9,10 +9,10 @@
  * - step-video-editing.ts     — PipelineStep 实现（ orchestration）
  */
 
-import { logger } from '@/core/utils/logger';
-import { tauriService } from '@/infrastructure/tauri-bridge/commands';
 import { RESOLUTION_1080P } from '@/common/constants/media-presets';
 import { delay, PROCESSING_DELAY_MS, isTauri } from '@/common/utils';
+import { logger } from '@/core/utils/logger';
+import { tauriService } from '@/infrastructure/tauri-bridge/commands';
 
 import { BasePipelineStep } from './base-pipeline-step';
 import { PipelineStepId, QualityGateDecision } from './pipeline-types';

@@ -2,9 +2,9 @@
  * 配音流水线服务（C2）
  */
 
+import type { StoryAnalysis, TTSConfig } from '@/common/types';
 import { ttsService, DEFAULT_TTS_CONFIG, TTS_VOICES } from '@/core/services/audio/tts-service';
 import { costService } from '@/core/services/project/cost-service';
-import type { StoryAnalysis, TTSConfig } from '@/common/types';
 
 export interface DialogueLine {
   id: string;

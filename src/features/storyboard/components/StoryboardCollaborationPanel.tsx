@@ -6,8 +6,6 @@
 import { AlertCircle, CheckCircle2, GitCompare, RotateCcw, Save } from 'lucide-react';
 import React, { useState } from 'react';
 
-import type { FrameComment, StoryboardVersion, VersionDiffSummary } from '@/core/services';
-import { collaborationService } from '@/core/services';
 import { Alert, AlertDescription, AlertTitle } from '@/common/components/ui/alert';
 import { Button } from '@/common/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/common/components/ui/card';
@@ -24,6 +22,8 @@ import {
 import { Separator } from '@/common/components/ui/separator';
 import { toast } from '@/common/components/ui/toast';
 import type { StoryboardFrame } from '@/common/types/storyboard';
+import { collaborationService } from '@/core/services';
+import type { FrameComment, StoryboardVersion, VersionDiffSummary } from '@/core/services';
 
 export interface StoryboardCollaborationPanelProps {
   projectId: string;

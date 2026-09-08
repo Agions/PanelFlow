@@ -8,8 +8,6 @@ import {
 } from 'lucide-react';
 import { useState, useEffect, useCallback, useMemo } from 'react';
 
-import { assetService, Asset } from '@/core/services/project/asset-service';
-import { logger } from '@/core/utils/logger';
 import { EmptyState } from '@/common/components/ui';
 import { Button } from '@/common/components/ui/button';
 import { Dropdown } from '@/common/components/ui/dropdown';
@@ -19,6 +17,8 @@ import { toast } from '@/common/components/ui/toast';
 import { Upload } from '@/common/components/ui/upload';
 import { formatDuration, formatSizeMB } from '@/common/utils';
 import { handleAsyncError } from '@/common/utils/async';
+import { assetService, Asset } from '@/core/services/project/asset-service';
+import { logger } from '@/core/utils/logger';
 
 import styles from './AssetPanel.module.less';
 

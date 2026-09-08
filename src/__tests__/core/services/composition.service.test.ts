@@ -2,12 +2,12 @@
  * 合成服务测试 - Composition Service Tests
  */
 
+import type { StoryboardFrame } from '@/common/types/storyboard';
 import {
   CompositionService,
   getCompositionService,
   resetCompositionService,
 } from '@/core/services/domain/composition-service';
-import type { StoryboardFrame } from '@/common/types/storyboard';
 
 // Mock uuid
 jest.mock('uuid', () => ({

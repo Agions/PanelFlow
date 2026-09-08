@@ -85,7 +85,7 @@ export function ProjectEditProvider({
   const [audioConfig, setAudioConfig] = useState<AudioTrackConfig>(
     initialData?.audioConfig ?? initialProjectEditState.audioConfig
   );
-  const [audioEditorKey, setAudioEditorKey] = useState(
+  const [audioEditorKey, setAudioEditorKey] = useState(() =>
     initialData?.audioConfig ? `audio-${Date.now()}` : 'audio-init'
   );
   const [audioGenerating, setAudioGenerating] = useState(initialProjectEditState.audioGenerating);
@@ -150,24 +150,44 @@ export function ProjectEditProvider({
     startTransition,
   });
 
-  const state = {
-    content,
-    novelMetadata,
-    loading,
-    storyAnalysis,
-    analysisDraft,
-    analysisState,
-    focusFrameId,
-    commentDraft,
-    versionLabel,
-    audioConfig,
-    audioEditorKey,
-    audioGenerating,
-    characters,
-    composition,
-  };
-
-  const value = useMemo(() => ({ state, actions }), [state, actions]);
+  const value = useMemo(
+    () => ({
+      state: {
+        content,
+        novelMetadata,
+        loading,
+        storyAnalysis,
+        analysisDraft,
+        analysisState,
+        focusFrameId,
+        commentDraft,
+        versionLabel,
+        audioConfig,
+        audioEditorKey,
+        audioGenerating,
+        characters,
+        composition,
+      },
+      actions,
+    }),
+    [
+      content,
+      novelMetadata,
+      loading,
+      storyAnalysis,
+      analysisDraft,
+      analysisState,
+      focusFrameId,
+      commentDraft,
+      versionLabel,
+      audioConfig,
+      audioEditorKey,
+      audioGenerating,
+      characters,
+      composition,
+      actions,
+    ]
+  );
 
   return <ProjectEditContext.Provider value={value}>{children}</ProjectEditContext.Provider>;
 }

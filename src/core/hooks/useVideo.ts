@@ -3,13 +3,13 @@
  * 统一的视频上传、分析和处理
  */
 
-import { useReducer, useCallback, useRef } from 'react';
+import { useReducer, useCallback, useRef, useMemo } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
-import { captureVideoFrameAsDataURL } from '@/core/utils/video-thumbnail';
-import type { VideoInfo, VideoAnalysis, TaskStatus } from '@/common/types';
+import type { VideoInfo, VideoAnalysis, TaskStatus, VideoScene, Keyframe } from '@/common/types';
 import { formatDurationShort } from '@/common/utils';
 import { delay } from '@/common/utils/timing';
+import { captureVideoFrameAsDataURL } from '@/core/utils/video-thumbnail';
 
 import { videoReducer, initialVideoState, createVideoSetters } from './useVideoReducer';
 
@@ -58,15 +58,14 @@ const getVideoInfo = (file: File): Promise<VideoInfo> => {
         id: uuidv4(),
         path: url,
         name: file.name,
+        size: file.size,
+        format: file.name.split('.').pop()?.toLowerCase() || 'mp4',
         duration: video.duration,
         width: video.videoWidth,
         height: video.videoHeight,
-        fps: 30, // 默认
-        format: file.name.split('.').pop()?.toLowerCase() || 'mp4',
-        size: file.size,
+        fps: 30,
         createdAt: new Date().toISOString(),
       };
-
       resolve(info);
     };
 
@@ -83,6 +82,7 @@ export function useVideo(): UseVideoReturn {
   // ── 8 useState 已迁移到 useReducer 状态机 (2026-06-11) ──
   // 死代码清理: 原 L121 isLoading setter 从未使用, 已删除.
   const [state, dispatch] = useReducer(videoReducer, initialVideoState);
+  const setters = useMemo(() => createVideoSetters(dispatch), [dispatch]);
   const {
     setVideo,
     setAnalysis,
@@ -92,7 +92,7 @@ export function useVideo(): UseVideoReturn {
     setAnalysisProgress,
     setTaskStatus,
     setError,
-  } = createVideoSetters(dispatch);
+  } = setters;
 
   const {
     video,
@@ -162,7 +162,7 @@ export function useVideo(): UseVideoReturn {
     } finally {
       setIsUploading(false);
     }
-  }, []);
+  }, [setError, setIsUploading, setUploadProgress, setVideo]);
 
   // 分析视频
   const analyzeVideo = useCallback(
@@ -253,7 +253,7 @@ export function useVideo(): UseVideoReturn {
         setIsAnalyzing(false);
       }
     },
-    [video]
+    [video, setError, setIsAnalyzing, setAnalysisProgress, setTaskStatus, setAnalysis]
   );
 
   // 取消分析
@@ -265,7 +265,7 @@ export function useVideo(): UseVideoReturn {
     setTaskStatus((prev) =>
       prev ? { ...prev, status: 'cancelled' as const, message: '已取消' } : null
     );
-  }, []);
+  }, [setIsAnalyzing, setTaskStatus]);
 
   // 提取缩略图
   const extractThumbnail = useCallback(
@@ -279,7 +279,7 @@ export function useVideo(): UseVideoReturn {
         return null;
       }
     },
-    [video]
+    [video, setError]
   );
 
   // 提取关键帧
@@ -322,8 +322,8 @@ export function useVideo(): UseVideoReturn {
 }
 
 // 辅助函数
-function generateMockScenes(duration: number) {
-  const scenes = [];
+function generateMockScenes(duration: number): VideoScene[] {
+  const scenes: VideoScene[] = [];
   const sceneCount = Math.floor(duration / 30);
 
   for (let i = 0; i < sceneCount; i++) {
@@ -340,8 +340,8 @@ function generateMockScenes(duration: number) {
   return scenes;
 }
 
-function generateMockKeyframes(duration: number) {
-  const keyframes = [];
+function generateMockKeyframes(duration: number): Keyframe[] {
+  const keyframes: Keyframe[] = [];
   const count = Math.floor(duration / 5);
 
   for (let i = 0; i < count; i++) {

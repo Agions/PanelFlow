@@ -4,10 +4,10 @@
  * AI-powered summary with fallback to default summary on failure.
  */
 
-import { aiService } from '@/core/services/ai/text/ai-service';
-import { logger } from '@/core/utils/logger';
 import type { VideoAnalysis, VideoInfo } from '@/common/types';
 import { formatTime } from '@/common/utils';
+import { aiService } from '@/core/services/ai/text/ai-service';
+import { logger } from '@/core/utils/logger';
 
 import { groupObjectsByCategory } from './video-analysis-utils';
 

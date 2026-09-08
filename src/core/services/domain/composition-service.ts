@@ -16,13 +16,13 @@
  * resetCompositionService），857 行测试 1 行无需修改。
  */
 
-import { logger } from '@/core/utils/logger';
 import type {
   CompositionProject,
   FrameAnimation,
   StoryboardFrame,
   TransitionConfig,
 } from '@/common/types';
+import { logger } from '@/core/utils/logger';
 
 import {
   buildFramesFromStoryboard,

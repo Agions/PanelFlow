@@ -1,9 +1,10 @@
+import type { ScriptSegment } from '@/common/types';
+import { aiService } from '@/core/services/ai/text/ai-service';
 import {
   subtitleService,
   DEFAULT_SUBTITLE_STYLE,
   ASS_STYLE_PRESETS,
 } from '@/core/services/video/subtitle-service';
-import type { ScriptSegment } from '@/common/types';
 
 // Mock aiService
 jest.mock('@/core/services/ai/text/ai-service', () => ({
@@ -26,8 +27,6 @@ jest.mock('@/core/utils/logger', () => ({
     debug: jest.fn(),
   },
 }));
-
-import { aiService } from '@/core/services/ai/text/ai-service';
 
 describe('SubtitleService', () => {
   beforeEach(() => {

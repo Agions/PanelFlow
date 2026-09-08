@@ -15,11 +15,11 @@ import {
 } from 'lucide-react';
 import React, { useState } from 'react';
 
-import { useProject } from '@/core/hooks/useProject';
 import { Badge } from '@/common/components/ui/badge';
 import { Button } from '@/common/components/ui/button';
 import { Card } from '@/common/components/ui/card';
 import { toast } from '@/common/components/ui/toast';
+import { useProject } from '@/core/hooks/useProject';
 
 
 type PublishPlatform = 'bilibili' | 'douyin' | 'youtube' | 'tiktok';

@@ -12,6 +12,8 @@
  * 对外 API 不变: 15 setXxx 名字 + signature 保持兼容, 调用方 0 改动.
  */
 
+import { createFieldUpdater, type FieldUpdater as Updater } from '@/core/utils/reducer-helpers';
+
 import type { OutputFormat, VideoQuality, VideoSegment } from './videoEditorTypes';
 
 // ─── 状态类型 ──────────────────────────────────────────────────────────────
@@ -85,8 +87,6 @@ export function videoEditorReducer(
 }
 
 // ─── Setter 工厂 ───────────────────────────────────────────────────────────
-
-import { createFieldUpdater, type FieldUpdater as Updater } from '@/core/utils/reducer-helpers';
 
 // ─── 15 setter wrap ────────────────────────────────────────────────────────
 

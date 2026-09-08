@@ -18,11 +18,11 @@
  * 单一职责：把 Chapter[] 并发切为 NovelScene[]（AI 优先 + 规则兜底）。
  */
 
+import type { Chapter, NovelScene } from '@/common/types';
 import { aiService } from '@/core/services/ai/text/ai-service';
 import { ruleBasedSegmentation } from '@/core/services/ai/text/novel-helpers';
 import { concurrentLimit } from '@/core/utils/concurrency';
 import { logger } from '@/core/utils/logger';
-import type { Chapter, NovelScene } from '@/common/types';
 
 import type { ResolvedAnalyzeConfig } from './novel-analyze-config';
 

@@ -16,9 +16,9 @@
 import { open } from '@tauri-apps/plugin-dialog';
 import { useReducer, useRef, useEffect, useMemo, useCallback } from 'react';
 
-import { logger } from '@/core/utils/logger';
 import { message } from '@/common/components/ui/message';
 import { generateId } from '@/common/utils';
+import { logger } from '@/core/utils/logger';
 
 import {
   AUDIO_FILE_EXTENSIONS,
@@ -120,6 +120,7 @@ export function useAudioEditor({
       effectVolume: initialConfig?.effectVolume,
     })
   );
+  const setters = useMemo(() => createAudioEditorSetters(dispatch), [dispatch]);
   const {
     setVoiceTracks,
     setBackgroundMusic,
@@ -134,7 +135,7 @@ export function useAudioEditor({
     setPlayingSfxId,
     setIsRecording,
     setRecordingTime,
-  } = createAudioEditorSetters(dispatch);
+  } = setters;
 
   const {
     voiceTracks,
@@ -200,17 +201,12 @@ export function useAudioEditor({
   useEffect(() => {
     const voiceRefs = voiceAudioRefs.current;
     const sfxRefs = sfxAudioRefs.current;
-    const musicRef = musicAudioRef.current;
 
     return () => {
       voiceRefs.forEach((audio) => {
         audio.pause();
         audio.src = '';
       });
-      if (musicRef) {
-        musicRef.pause();
-        musicRef.src = '';
-      }
       sfxRefs.forEach((audio) => {
         audio.pause();
         audio.src = '';
@@ -222,7 +218,16 @@ export function useAudioEditor({
         }
       });
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [voiceTracks]);
+
+  useEffect(() => {
+    return () => {
+      const musicAudio = musicAudioRef.current;
+      if (musicAudio) {
+        musicAudio.pause();
+        musicAudio.src = '';
+      }
+    };
   }, []);
 
   // ========== 工具方法 ==========
@@ -244,7 +249,7 @@ export function useAudioEditor({
     setPlayingVoiceId(null);
     setPlayingMusic(false);
     setPlayingSfxId(null);
-  }, []);
+  }, [setPlayingVoiceId, setPlayingMusic, setPlayingSfxId]);
 
   // ========== 配音操作 ==========
 
@@ -272,7 +277,7 @@ export function useAudioEditor({
       logger.error('导入配音失败:', error);
       message.error('导入配音失败，请重试');
     }
-  }, []);
+  }, [setVoiceTracks]);
 
   const handleVoiceRemove = useCallback(
     (id: string) => {
@@ -281,7 +286,7 @@ export function useAudioEditor({
       });
       message.success('配音已移除');
     },
-    [voiceTracks]
+    [voiceTracks, setVoiceTracks]
   );
 
   const handleVoicePlay = useCallback(
@@ -305,16 +310,16 @@ export function useAudioEditor({
         setPlayingVoiceId(track.id);
       }
     },
-    [playingVoiceId, voiceVolume, masterVolume, stopAllAudio]
+    [playingVoiceId, voiceVolume, masterVolume, stopAllAudio, setPlayingVoiceId]
   );
 
   const handleVoiceVolumeChange = useCallback((id: string, volume: number) => {
     setVoiceTracks((prev) => prev.map((t) => (t.id === id ? { ...t, volume } : t)));
-  }, []);
+  }, [setVoiceTracks]);
 
   const handleVoiceStartTimeChange = useCallback((id: string, startTime: number) => {
     setVoiceTracks((prev) => prev.map((t) => (t.id === id ? { ...t, startTime } : t)));
-  }, []);
+  }, [setVoiceTracks]);
 
   // ========== 背景音乐操作 ==========
 
@@ -350,7 +355,7 @@ export function useAudioEditor({
       logger.error('选择背景音乐失败:', error);
       message.error('选择背景音乐失败，请重试');
     }
-  }, []);
+  }, [setBackgroundMusic]);
 
   const handleMusicRemove = useCallback(() => {
     if (musicAudioRef.current) {
@@ -360,7 +365,7 @@ export function useAudioEditor({
     setBackgroundMusic(null);
     setPlayingMusic(false);
     message.success('背景音乐已移除');
-  }, []);
+  }, [setBackgroundMusic, setPlayingMusic]);
 
   const handleMusicPlay = useCallback(() => {
     if (!backgroundMusic) return;
@@ -386,11 +391,11 @@ export function useAudioEditor({
         setPlayingMusic(true);
       }
     }
-  }, [backgroundMusic, playingMusic, musicVolume, masterVolume, stopAllAudio]);
+  }, [backgroundMusic, playingMusic, musicVolume, masterVolume, stopAllAudio, setPlayingMusic]);
 
   const handleMusicVolumeChange = useCallback((volume: number) => {
     setBackgroundMusic((prev) => (prev ? { ...prev, volume } : null));
-  }, []);
+  }, [setBackgroundMusic]);
 
   const handleMusicLoopChange = useCallback((loop: boolean) => {
     setBackgroundMusic((prev) => {
@@ -398,7 +403,7 @@ export function useAudioEditor({
       if (musicAudioRef.current) musicAudioRef.current.loop = loop;
       return { ...prev, loop };
     });
-  }, []);
+  }, [setBackgroundMusic]);
 
   // ========== 音效操作 ==========
 
@@ -424,12 +429,12 @@ export function useAudioEditor({
       logger.error('导入音效失败:', error);
       message.error('导入音效失败，请重试');
     }
-  }, []);
+  }, [setSoundEffects]);
 
   const handleSfxRemove = useCallback((id: string) => {
     setSoundEffects((prev) => prev.filter((e) => e.id !== id));
     message.success('音效已移除');
-  }, []);
+  }, [setSoundEffects]);
 
   const handleSfxPlay = useCallback(
     (effect: SoundEffect) => {
@@ -452,16 +457,16 @@ export function useAudioEditor({
         setPlayingSfxId(effect.id);
       }
     },
-    [playingSfxId, effectVolume, masterVolume, stopAllAudio]
+    [playingSfxId, effectVolume, masterVolume, stopAllAudio, setPlayingSfxId]
   );
 
   const handleSfxVolumeChange = useCallback((id: string, volume: number) => {
     setSoundEffects((prev) => prev.map((e) => (e.id === id ? { ...e, volume } : e)));
-  }, []);
+  }, [setSoundEffects]);
 
   const handleSfxStartTimeChange = useCallback((id: string, startTime: number) => {
     setSoundEffects((prev) => prev.map((e) => (e.id === id ? { ...e, startTime } : e)));
-  }, []);
+  }, [setSoundEffects]);
 
   // ========== 录音操作（由 useRecording 管理） ==========
 

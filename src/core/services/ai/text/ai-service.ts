@@ -16,11 +16,11 @@
  * 19 个调用方无需修改。
  */
 
+import type { Script } from '@/common/types';
 import { mockStrategy } from '@/core/ai/providers';
 import { getModelById } from '@/core/config/models-config';
 import { LLM_MODELS, DEFAULT_LLM_MODEL, MODEL_RECOMMENDATIONS } from '@/core/constants';
 import { logger } from '@/core/utils/logger';
-import type { Script } from '@/common/types';
 
 import { batchGenerate } from './ai-batch';
 import { buildAICacheKey, withAIResponseCache } from './ai-cache';
@@ -39,6 +39,7 @@ import type {
   MockConfig,
 } from './ai-service-types';
 import { streamGenerateWithFallback } from './ai-stream';
+import { promptBuilderService } from './prompt-builder-service';
 
 // Re-export shared types from centralized types file
 export type {
@@ -53,8 +54,6 @@ export type {
   VideoScene,
   Keyframe,
 } from './ai-service-types';
-
-import { promptBuilderService } from './prompt-builder-service';
 
 class AIService {
   // 启用/禁用 Mock 模式

@@ -1,8 +1,8 @@
-/**
- * manga-pipeline-service.ts 测试
- */
-
+import { generateImage, generateVideo } from '@/core/services/ai/image/image-generation-service';
+import { syncLip, generateTalkingHead } from '@/core/services/audio/lip-sync-service';
+import { ttsService } from '@/core/services/audio/tts-service';
 import { MangaPipelineService, type PipelineScene, type PipelineProgress } from '@/core/services/domain/manga-pipeline-service';
+import { composeVideo, addSubtitles } from '@/core/services/video/video-compositor-service';
 
 // Mock 依赖的服务（路径必须匹配 src/core/services/domain/manga-pipeline-service.ts 真实 import）
 jest.mock('@/core/services/ai/image/image-generation-service', () => ({
@@ -25,11 +25,6 @@ jest.mock('@/core/services/video/video-compositor-service', () => ({
   composeVideo: jest.fn(),
   addSubtitles: jest.fn(),
 }));
-
-import { generateImage, generateVideo } from '@/core/services/ai/image/image-generation-service';
-import { syncLip, generateTalkingHead } from '@/core/services/audio/lip-sync-service';
-import { ttsService } from '@/core/services/audio/tts-service';
-import { composeVideo, addSubtitles } from '@/core/services/video/video-compositor-service';
 
 describe('MangaPipelineService', () => {
   let service: MangaPipelineService;

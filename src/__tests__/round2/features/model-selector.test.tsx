@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react';
 
-import { ModelSelector } from '@/features/model-selector';
 import { TooltipProvider } from '@/common/components/ui/tooltip';
+import { ModelSelector } from '@/features/model-selector';
 
 describe('ModelSelector feature', () => {
   it('mounts without crashing', () => {

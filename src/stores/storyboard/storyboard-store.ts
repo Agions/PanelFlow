@@ -1,11 +1,11 @@
 import { create } from 'zustand';
 
+import type { StoryboardFrame } from '@/common/types';
 import type {
   FrameComment,
   StoryboardVersion,
   VersionDiffSummary,
 } from '@/core/services/domain/collaboration-service';
-import type { StoryboardFrame } from '@/common/types';
 
 export interface StoryboardState {
   frames: StoryboardFrame[];

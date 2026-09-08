@@ -2,9 +2,9 @@ import { ArrowLeft, Save } from 'lucide-react';
 import React, { useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { useProject } from '@/core/hooks/useProject';
 import { Button } from '@/common/components/ui/button';
 import { toast } from '@/common/components/ui/toast';
+import { useProject } from '@/core/hooks/useProject';
 import type { RoleType } from '@novella/core';
 
 import { StepContentSwitcher } from './components/StepContentSwitcher';

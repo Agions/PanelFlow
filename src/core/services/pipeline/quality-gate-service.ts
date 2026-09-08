@@ -1,5 +1,5 @@
-import type { EvaluationScores } from '@/core/services/project/evaluation-service';
 import type { StoryboardFrame } from '@/common/types/storyboard';
+import type { EvaluationScores } from '@/core/services/project/evaluation-service';
 
 export type QualityGateIssueLevel = 'error' | 'warning';
 

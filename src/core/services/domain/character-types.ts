@@ -8,14 +8,13 @@
  */
 
 import type { Character } from '@/common/types';
+import { STORAGE_KEYS } from '@/core/constants/app-config';
 
 /** 角色服务构造选项 */
 export interface CharacterServiceOptions {
   projectId?: string;
   autoSave?: boolean;
 }
-
-import { STORAGE_KEYS } from '@/core/constants/app-config';
 
 /** localStorage 存储键（保留 "manga-characters" 拼写以兼容既有数据） */
 const CHARACTER_STORAGE_KEY = STORAGE_KEYS.CHARACTERS;

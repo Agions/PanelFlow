@@ -7,6 +7,11 @@
  * @module features/asset-library
  */
 
+import { v4 as uuidv4 } from 'uuid';
+
+import type { ProjectData } from '@/common/types';
+import { configureRenderStepHooks } from '@/core/pipeline/step-render';
+
 // ========== 类型定义 ==========
 
 /** 场景风格预设 */
@@ -108,10 +113,6 @@ export const TARGET_CORE_SCENES = 12;
 export const HIGH_REUSE_THRESHOLD = 3;
 
 // ========== 服务胶水 ==========
-
-import { v4 as uuidv4 } from 'uuid';
-
-import type { ProjectData } from '@/common/types';
 
 // ========== 内存存储（生产环境应替换为 IndexedDB / Tauri KV） ==========
 
@@ -507,6 +508,5 @@ export function initializeCoreTemplates(): void {
   }
 }
 
-import { configureRenderStepHooks } from '@/core/pipeline/step-render';
 configureRenderStepHooks({ assetService: assetLibraryService });
 

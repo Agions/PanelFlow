@@ -24,9 +24,9 @@
  *   - exportToScript 委托给 scriptAnalyzer 1:1
  */
 
+import type { AnalyzeConfig, AnalyzeResult } from '@/common/types';
 import { scriptAnalyzer } from '@/core/services/ai/text/script-analyzer-service';
 import { sceneAnalyzer } from '@/core/services/video/scene-analyzer-service';
-import type { AnalyzeConfig, AnalyzeResult } from '@/common/types';
 
 import { segmentChapters } from './novel-analyze-chapter-segments';
 import { resolveAnalyzeConfig, type ResolvedAnalyzeConfig } from './novel-analyze-config';

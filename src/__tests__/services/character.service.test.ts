@@ -2,8 +2,8 @@
  * CharacterService 单元测试
  */
 
-import { CharacterService, resetCharacterService } from '@/core/services/domain/character-service';
 import type { CharacterAppearance, Character } from '@/common/types';
+import { CharacterService, resetCharacterService } from '@/core/services/domain/character-service';
 
 describe('CharacterService', () => {
   let service: CharacterService;

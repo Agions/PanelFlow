@@ -1,7 +1,6 @@
 import { Download, Video, Settings, CheckCircle } from 'lucide-react';
 import { useState, useCallback } from 'react';
 
-import { logger } from '@/core/utils/logger';
 import { Alert, AlertDescription } from '@/common/components/ui/alert';
 import { Button } from '@/common/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/common/components/ui/card';
@@ -29,6 +28,8 @@ import {
   type FrameRate,
   type QualityPreset,
 } from '@/common/constants/media-presets';
+import type { ExportSettings as _ExportSettings } from '@/common/types/composition';
+import { logger } from '@/core/utils/logger';
 
 export type { ExportFormat, Resolution, FrameRate, QualityPreset };
 
@@ -54,8 +55,6 @@ interface VideoExporterProps {
   onCancel?: () => void;
   initialSettings?: Partial<ExportSettings>;
 }
-
-import type { ExportSettings as _ExportSettings } from '@/common/types/composition';
 
 /**
  * Canonical ExportSettings — re-exported from @/common/types/composition.

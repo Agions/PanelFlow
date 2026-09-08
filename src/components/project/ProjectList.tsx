@@ -2,7 +2,6 @@ import { Plus, Edit, Trash2, FolderOpen } from 'lucide-react';
 import { useEffect, useState, useCallback, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { logger } from '@/core/utils/logger';
 import { EmptyState, Skeleton } from '@/common/components/ui';
 import { Button } from '@/common/components/ui/button';
 import { Card, CardContent } from '@/common/components/ui/card';
@@ -10,6 +9,7 @@ import { toast } from '@/common/components/ui/toast';
 import { useProjectStore } from '@/common/stores/project-store';
 import type { ProjectData } from '@/common/types';
 import { formatDate } from '@/common/utils/format-ui';
+import { logger } from '@/core/utils/logger';
 
 /**
  * 项目列表视图组件

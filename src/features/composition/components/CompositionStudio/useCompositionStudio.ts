@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useReducer } from 'react';
+import { useCallback, useEffect, useRef, useReducer, useMemo } from 'react';
 
 import type {
   CompositionProject,
@@ -67,6 +67,7 @@ export function useCompositionStudio(options: UseCompositionStudioOptions) {
     compositionStudioReducer,
     initialCompositionStudioState(buildInitialComposition(projectId ?? ''))
   );
+  const setters = useMemo(() => createCompositionStudioSetters(dispatch), [dispatch]);
   const {
     setComposition,
     setEditingFrameId,
@@ -78,7 +79,7 @@ export function useCompositionStudio(options: UseCompositionStudioOptions) {
     setCurrentFrameIndex,
     setPlaybackSpeed,
     setKeyframes,
-  } = createCompositionStudioSetters(dispatch);
+  } = setters;
 
   const {
     composition,
@@ -162,13 +163,15 @@ export function useCompositionStudio(options: UseCompositionStudioOptions) {
     frames.length,
     composition.masterSettings.frameDuration,
     playbackSpeed,
+    setIsPlaying,
+    setCurrentFrameIndex,
   ]);
 
   // 打开帧编辑模态框
   const handleEditFrame = useCallback((frameId: string) => {
     setEditingFrameId(frameId);
     setFrameModalVisible(true);
-  }, []);
+  }, [setEditingFrameId, setFrameModalVisible]);
 
   // 打开关键帧编辑器
   const handleOpenKeyframes = useCallback(
@@ -178,7 +181,7 @@ export function useCompositionStudio(options: UseCompositionStudioOptions) {
       setEditingFrameId(frameId);
       setKeyframeModalVisible(true);
     },
-    [composition.frames]
+    [composition.frames, setKeyframes, setEditingFrameId, setKeyframeModalVisible]
   );
 
   // 保存关键帧
@@ -199,12 +202,12 @@ export function useCompositionStudio(options: UseCompositionStudioOptions) {
     });
 
     setKeyframeModalVisible(false);
-  }, [editingFrameId, keyframes]);
+  }, [editingFrameId, keyframes, setComposition, setKeyframeModalVisible]);
 
   // 删除关键帧
   const handleDeleteKeyframe = useCallback((index: number) => {
     setKeyframes((prev) => prev.filter((_, i) => i !== index));
-  }, []);
+  }, [setKeyframes]);
 
   // 保存帧动画配置
   const handleSaveFrame = useCallback(
@@ -231,7 +234,7 @@ export function useCompositionStudio(options: UseCompositionStudioOptions) {
       setFrameModalVisible(false);
       setEditingFrameId(null);
     },
-    [editingFrameId]
+    [editingFrameId, setComposition, setFrameModalVisible, setEditingFrameId]
   );
 
   // 重置帧
@@ -248,12 +251,12 @@ export function useCompositionStudio(options: UseCompositionStudioOptions) {
         updatedAt: new Date().toISOString(),
       };
     });
-  }, [editingFrameId]);
+  }, [editingFrameId, setComposition]);
 
   // 打开全局设置
   const handleOpenGlobalSettings = useCallback(() => {
     setGlobalModalVisible(true);
-  }, []);
+  }, [setGlobalModalVisible]);
 
   // 保存全局设置
   const handleSaveGlobalSettings = useCallback(
@@ -277,7 +280,7 @@ export function useCompositionStudio(options: UseCompositionStudioOptions) {
       }));
       setGlobalModalVisible(false);
     },
-    []
+    [setComposition, setGlobalModalVisible]
   );
 
   // 预览转场效果 (保留为 noop — 旧调用方兼容性, L729 触发)
@@ -319,14 +322,14 @@ export function useCompositionStudio(options: UseCompositionStudioOptions) {
   const handlePlay = useCallback(() => {
     setIsPlaying(true);
     setCurrentFrameIndex(0);
-  }, []);
+  }, [setIsPlaying, setCurrentFrameIndex]);
 
   const handlePause = useCallback(() => {
     setIsPlaying(false);
     if (animationRef.current) {
       cancelAnimationFrame(animationRef.current);
     }
-  }, []);
+  }, [setIsPlaying]);
 
   // 下一帧
   const handleNext = useCallback(() => {
@@ -335,14 +338,14 @@ export function useCompositionStudio(options: UseCompositionStudioOptions) {
     } else {
       setIsPlaying(false);
     }
-  }, [currentFrameIndex, frames.length]);
+  }, [currentFrameIndex, frames.length, setCurrentFrameIndex, setIsPlaying]);
 
   // 上一帧 (待补)
   const handlePrev = useCallback(() => {
     if (currentFrameIndex > 0) {
       setCurrentFrameIndex((prev) => prev - 1);
     }
-  }, [currentFrameIndex]);
+  }, [currentFrameIndex, setCurrentFrameIndex]);
 
   return {
     // state

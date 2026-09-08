@@ -1,10 +1,10 @@
 import { useState } from 'react';
 
-import type { ScriptImportMetadata } from '@/features/storyboard/components/NovelImporter';
-import NovelImporter from '@/features/storyboard/components/NovelImporter';
 import { Alert } from '@/common/components/ui/alert';
 import { Card } from '@/common/components/ui/card';
 import { Space } from '@/common/components/ui/space';
+import NovelImporter from '@/features/storyboard/components/NovelImporter';
+import type { ScriptImportMetadata } from '@/features/storyboard/components/NovelImporter';
 
 import ScriptGenerator from '../ScriptGenerator/ScriptGenerator';
 

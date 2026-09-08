@@ -4,7 +4,8 @@
  * Modal dialog for confirmation flows. Supports both controlled
  * (with `open`/`onOpenChange`) and imperative (`useConfirm` hook) usage.
  */
-import * as React from 'react';
+
+import React, { useState } from 'react';
 
 export interface ConfirmDialogProps {
   open?: boolean;
@@ -75,7 +76,6 @@ export default ConfirmDialog;
 // ============================================
 // useConfirm hook
 // ============================================
-import { useState } from 'react';
 
 export interface UseConfirmOptions {
   title?: string;

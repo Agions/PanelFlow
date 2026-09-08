@@ -11,6 +11,8 @@
  * 对外 API 不变: 13 setXxx 名字 + signature 保持兼容, 调用方 0 改动.
  */
 
+import { createFieldUpdater, type FieldUpdater as Updater } from '@/common/utils/reducer-helpers';
+
 import type {
   VoiceTrack,
   BackgroundMusic,
@@ -95,8 +97,6 @@ export function audioEditorReducer(
 }
 
 // ─── Setter 工厂 ───────────────────────────────────────────────────────────
-
-import { createFieldUpdater, type FieldUpdater as Updater } from '@/common/utils/reducer-helpers';
 
 // ─── 13 setter wrap ────────────────────────────────────────────────────────
 

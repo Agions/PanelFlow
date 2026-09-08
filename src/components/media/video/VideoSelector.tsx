@@ -3,13 +3,13 @@ import { open } from '@tauri-apps/plugin-dialog';
 import { Upload, Trash2, PlayCircle } from 'lucide-react';
 import { useState } from 'react';
 
-import { tauriService } from '@/core/services';
-import { logger } from '@/core/utils/logger';
 import { Button } from '@/common/components/ui/button';
 import { Card } from '@/common/components/ui/card';
 import { toast } from '@/common/components/ui/toast';
 import { VideoMetadata } from '@/common/types';
 import { formatDurationShort } from '@/common/utils';
+import { tauriService } from '@/core/services';
+import { logger } from '@/core/utils/logger';
 
 import styles from './VideoSelector.module.less';
 

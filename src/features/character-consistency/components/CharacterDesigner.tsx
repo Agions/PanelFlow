@@ -6,7 +6,6 @@
 import { Plus, Trash2, Save, Wand2 } from 'lucide-react';
 import { useState, useCallback, useMemo } from 'react';
 
-import { logger } from '@/core/utils/logger';
 import { Button } from '@/common/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/common/components/ui/card';
 import { Input } from '@/common/components/ui/input';
@@ -31,6 +30,7 @@ import {
 import type { CharacterAppearance, ClothingItem } from '@/common/types/composition';
 import type { Character } from '@/common/types/novel';
 import { generateCharId } from '@/common/utils';
+import { logger } from '@/core/utils/logger';
 
 import styles from './CharacterDesigner.module.less';
 

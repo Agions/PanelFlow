@@ -9,8 +9,8 @@
  *   - 本文件                       服务类 + 编排
  */
 
-import { aiService } from '@/core/services/ai/text/ai-service';
 import type { VideoAnalysis, VideoInfo } from '@/common/types';
+import { aiService } from '@/core/services/ai/text/ai-service';
 
 import {
   DEFAULT_ANALYSIS_CONFIG,

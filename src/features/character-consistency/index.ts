@@ -7,9 +7,24 @@
  * @module features/character-consistency
  */
 
-// ========== 类型定义 ==========
+import { v4 as uuidv4 } from 'uuid';
 
 import type { Character } from '@/common/types';
+import { configureRenderStepHooks } from '@/core/pipeline/step-render';
+import { createCharacter } from '@/core/services/domain/character-factory';
+import { getCharacterService } from '@/core/services/domain/character-service';
+import {
+  buildCharacterFromTemplate,
+  listTemplates,
+  validateCharacter,
+} from '@/core/services/domain/character-template';
+import { visualConsistencyScorer } from '@/core/services/video/visual-consistency-scorer-service';
+import type {
+  VisualConsistencyInput,
+  VisualConsistencyResult,
+} from '@/core/services/video/visual-consistency-types';
+
+// ========== 类型定义 ==========
 
 /** 角色 DNA 结构化描述 */
 export interface CharacterDNA {
@@ -58,10 +73,6 @@ export interface CharacterTemplateOutput {
 }
 
 // ========== 服务胶水 ==========
-
-import { v4 as uuidv4 } from 'uuid';
-
-
 
 // ========== 角色 DNA 管理 ==========
 
@@ -261,15 +272,5 @@ export const characterConsistencyService = {
 
 export default characterConsistencyService;
 
-import { configureRenderStepHooks } from '@/core/pipeline/step-render';
-import { createCharacter } from '@/core/services/domain/character-factory';
-import { getCharacterService } from '@/core/services/domain/character-service';
-import {
-  buildCharacterFromTemplate,
-  listTemplates,
-  validateCharacter,
-} from '@/core/services/domain/character-template';
-import { visualConsistencyScorer } from '@/core/services/video/visual-consistency-scorer-service';
-import type { VisualConsistencyInput, VisualConsistencyResult } from '@/core/services/video/visual-consistency-types';
 configureRenderStepHooks({ checkBatchConsistency });
 

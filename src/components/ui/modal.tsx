@@ -173,11 +173,18 @@ const ModalConfirm = ({
   onCancel?: () => void;
 }) => {
   const [open, setOpen] = React.useState(true);
+  const openRef = React.useRef(open);
+  const onCancelRef = React.useRef(onCancel);
+
+  React.useEffect(() => {
+    openRef.current = open;
+    onCancelRef.current = onCancel;
+  });
 
   // Cleanup: call onCancel if dialog unmounts while still open
   React.useEffect(() => {
     return () => {
-      if (open) onCancel?.();
+      if (openRef.current) onCancelRef.current?.();
     };
   }, []);
 
@@ -223,11 +230,18 @@ const ModalConfirmDialog = ({
   okType?: string;
 }) => {
   const [open, setOpen] = React.useState(true);
+  const openRef = React.useRef(open);
+  const onCancelRef = React.useRef(onCancel);
+
+  React.useEffect(() => {
+    openRef.current = open;
+    onCancelRef.current = onCancel;
+  });
 
   // Cleanup: call onCancel if dialog unmounts while still open
   React.useEffect(() => {
     return () => {
-      if (open) onCancel?.();
+      if (openRef.current) onCancelRef.current?.();
     };
   }, []);
 

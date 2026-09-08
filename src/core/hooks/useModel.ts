@@ -5,6 +5,8 @@
 
 import { useState, useCallback, useMemo } from 'react';
 
+import type { AIModel, ModelProvider, ModelCategory, AIModelSettings } from '@/common/types';
+import { delay } from '@/common/utils/timing';
 import { hasAnyConfiguredModelProvider } from '@/core/config/model-providers';
 import {
   AI_MODELS,
@@ -14,8 +16,6 @@ import {
   getRecommendedModels,
 } from '@/core/config/models-config';
 import { secureStorage } from '@/core/services/project/secure-storage-service';
-import type { AIModel, ModelProvider, ModelCategory, AIModelSettings } from '@/common/types';
-import { delay } from '@/common/utils/timing';
 
 export interface UseModelReturn {
   // 模型列表

@@ -25,8 +25,8 @@
  * ```
  */
 
-import { logger } from '@/core/utils/logger';
 import { getErrorMessage, retryRequest } from '@/common/utils';
+import { logger } from '@/core/utils/logger';
 
 
 export class ServiceError extends Error {

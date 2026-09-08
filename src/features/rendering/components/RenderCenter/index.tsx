@@ -1,10 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
-import {
-  renderQueueService,
-  type FrameRenderJob,
-  type RenderLog,
-} from '@/core/services/project/render-queue-service';
 import { Badge } from '@/common/components/ui/badge';
 import { Button } from '@/common/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/common/components/ui/card';
@@ -25,6 +20,11 @@ import {
   TableRow,
 } from '@/common/components/ui/table';
 import type { StoryboardFrame } from '@/common/types/storyboard';
+import {
+  renderQueueService,
+  type FrameRenderJob,
+  type RenderLog,
+} from '@/core/services/project/render-queue-service';
 
 import styles from './index.module.less';
 

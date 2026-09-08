@@ -51,10 +51,11 @@ function Timeline({ currentTime, duration, tracks, onTimeUpdate }: TimelineProps
 
   // Clean up document event listeners on unmount (prevents memory leaks if unmounted mid-drag)
   useEffect(() => {
+    const handlers = handlersRef;
     return () => {
-      if (handlersRef.current.move)
-        document.removeEventListener('mousemove', handlersRef.current.move);
-      if (handlersRef.current.up) document.removeEventListener('mouseup', handlersRef.current.up);
+      if (handlers.current.move)
+        document.removeEventListener('mousemove', handlers.current.move);
+      if (handlers.current.up) document.removeEventListener('mouseup', handlers.current.up);
     };
   }, []);
 

@@ -2,10 +2,10 @@
  * 故事结构化分析服务（A2）
  */
 
+import type { StoryAnalysis, StoryAnalysisCharacter, StoryAnalysisChapter } from '@/common/types';
 import { aiService } from '@/core/services/ai/text/ai-service';
 import { scriptImportService } from '@/core/services/ai/text/script-import-service';
 import { costService } from '@/core/services/project/cost-service';
-import type { StoryAnalysis, StoryAnalysisCharacter, StoryAnalysisChapter } from '@/common/types';
 
 export interface StoryAnalysisOptions {
   provider?: string;

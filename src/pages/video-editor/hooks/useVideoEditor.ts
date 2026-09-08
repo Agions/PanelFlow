@@ -7,7 +7,7 @@
  * - 历史记录管理内联（与 segments 状态强耦联）
  */
 import { open } from '@tauri-apps/plugin-dialog';
-import { useReducer, useCallback, useEffect, useRef } from 'react';
+import { useReducer, useCallback, useEffect, useRef, useMemo } from 'react';
 
 import { toast } from '@/components/ui/toast';
 import { tauriService } from '@/core/services';
@@ -30,6 +30,7 @@ export type { VideoSegment, OutputFormat, VideoQuality } from './videoEditorType
 export function useVideoEditor(projectId?: string) {
   // ── 15 个 useState 已迁移到 useReducer 状态机 (2026-06-11) ──
   const [state, dispatch] = useReducer(videoEditorReducer, initialVideoEditorState(projectId));
+  const setters = useMemo(() => createVideoEditorSetters(dispatch), [dispatch]);
   const {
     setVideoSrc,
     setLoading,
@@ -45,7 +46,7 @@ export function useVideoEditor(projectId?: string) {
     setVideoQuality,
     setIsPlaying,
     setProjectData,
-  } = createVideoEditorSetters(dispatch);
+  } = setters;
 
   const {
     videoSrc,
@@ -83,7 +84,7 @@ export function useVideoEditor(projectId?: string) {
       });
       setHistoryIndex((prev) => prev + 1);
     },
-    [historyIndex]
+    [historyIndex, setEditHistory, setHistoryIndex]
   );
 
   const handleUndo = useCallback(() => {
@@ -92,7 +93,7 @@ export function useVideoEditor(projectId?: string) {
       setHistoryIndex(newIndex);
       setSegments(editHistory[newIndex]);
     }
-  }, [historyIndex, editHistory]);
+  }, [historyIndex, editHistory, setHistoryIndex, setSegments]);
 
   const handleRedo = useCallback(() => {
     if (historyIndex < editHistory.length - 1) {
@@ -100,7 +101,7 @@ export function useVideoEditor(projectId?: string) {
       setHistoryIndex(newIndex);
       setSegments(editHistory[newIndex]);
     }
-  }, [historyIndex, editHistory]);
+  }, [historyIndex, editHistory, setHistoryIndex, setSegments]);
 
   const canUndo = historyIndex > 0;
   const canRedo = historyIndex < editHistory.length - 1;
@@ -111,8 +112,13 @@ export function useVideoEditor(projectId?: string) {
     const loadProjectData = async () => {
       try {
         const projectText = await tauriService.readText(projectId);
-        const data = JSON.parse(projectText);
-        setProjectData({ id: data.id, name: data.name });
+        const data = JSON.parse(projectText) as {
+          id?: string;
+          name?: string;
+          keyFrames?: string[];
+          videos?: Array<{ path?: string; duration?: number }>;
+        };
+        setProjectData({ id: data.id || projectId, name: data.name || '未命名项目' });
         if (data.keyFrames) setKeyframes(data.keyFrames);
         if (data.videos && data.videos.length > 0) {
           const first = data.videos[0];
@@ -126,7 +132,7 @@ export function useVideoEditor(projectId?: string) {
       }
     };
     void loadProjectData();
-  }, [projectId]);
+  }, [projectId, setDuration, setKeyframes, setProjectData, setVideoSrc]);
 
   // --- 加载视频文件 ---
   const handleLoadVideo = async () => {
@@ -176,15 +182,15 @@ export function useVideoEditor(projectId?: string) {
       void videoRef.current.play().catch(() => {});
     }
     setIsPlaying(!isPlaying);
-  }, [isPlaying]);
+  }, [isPlaying, setIsPlaying]);
 
   const handleTimeUpdate = useCallback(() => {
     if (videoRef.current) setCurrentTime(videoRef.current.currentTime);
-  }, []);
+  }, [setCurrentTime]);
 
   const handleVideoLoaded = useCallback(() => {
     if (videoRef.current) setDuration(videoRef.current.duration);
-  }, []);
+  }, [setDuration]);
 
   // --- 片段操作 ---
   const handleAddSegment = useCallback(() => {
@@ -200,7 +206,7 @@ export function useVideoEditor(projectId?: string) {
     addToHistory(newSegments);
     setSelectedSegmentIndex(newSegments.length - 1);
     toast.success('已添加新片段');
-  }, [currentTime, duration, segments, addToHistory]);
+  }, [currentTime, duration, segments, addToHistory, setSegments, setSelectedSegmentIndex]);
 
   const handleDeleteSegment = useCallback(
     (index: number) => {
@@ -210,7 +216,7 @@ export function useVideoEditor(projectId?: string) {
       setSelectedSegmentIndex(-1);
       toast.success('已删除片段');
     },
-    [segments, addToHistory]
+    [segments, addToHistory, setSegments, setSelectedSegmentIndex]
   );
 
   const handleSelectSegment = useCallback(
@@ -221,7 +227,7 @@ export function useVideoEditor(projectId?: string) {
         setCurrentTime(segments[index].start);
       }
     },
-    [segments]
+    [segments, setSelectedSegmentIndex, setCurrentTime]
   );
 
   // --- 保存项目 ---
@@ -243,7 +249,7 @@ export function useVideoEditor(projectId?: string) {
     } finally {
       setIsSaving(false);
     }
-  }, [projectData, segments, projectId]);
+  }, [projectData, segments, projectId, setIsSaving]);
 
   return {
     videoSrc,

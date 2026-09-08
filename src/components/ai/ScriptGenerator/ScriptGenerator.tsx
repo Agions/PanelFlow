@@ -16,8 +16,6 @@ import {
 } from 'lucide-react';
 import { useState, useCallback, useEffect, lazy } from 'react';
 
-import { useModel, useModelCost } from '@/core/hooks/useModel';
-import { useProject } from '@/core/hooks/useProject';
 
 const ModelSelector = lazy(() => import('@/common/components/business/ModelSelector'));
 
@@ -36,6 +34,8 @@ import { toast } from '@/common/components/ui/toast';
 import { Text, Title, Paragraph } from '@/common/components/ui/typography';
 import type { Script, ScriptSegment } from '@/common/types';
 import { delay } from '@/common/utils';
+import { useModel, useModelCost } from '@/core/hooks/useModel';
+import { useProject } from '@/core/hooks/useProject';
 
 import styles from './ScriptGenerator.module.less';
 
@@ -118,16 +118,19 @@ export function ScriptGenerator({
   const [language, setLanguage] = useState('zh');
   const [requirements, setRequirements] = useState('');
 
-  const buildFormValues = (): ScriptFormValues => ({
-    topic,
-    keywords,
-    style,
-    tone,
-    length,
-    audience,
-    language,
-    requirements,
-  });
+  const buildFormValues = useCallback(
+    (): ScriptFormValues => ({
+      topic,
+      keywords,
+      style,
+      tone,
+      length,
+      audience,
+      language,
+      requirements,
+    }),
+    [topic, keywords, style, tone, length, audience, language, requirements]
+  );
   const [isGenerating, setIsGenerating] = useState(false);
   const [progress, setProgress] = useState(0);
   const [generatedScript, setGeneratedScript] = useState<Script | null>(null);
@@ -146,11 +149,10 @@ export function ScriptGenerator({
 
   // 估算成本
   const estimatedCost = useCallback(() => {
-    const currentLength = buildFormValues().length;
-    const wordCount = LENGTH_OPTIONS.find((l) => l.value === currentLength)?.words || '500-800字';
+    const wordCount = LENGTH_OPTIONS.find((l) => l.value === length)?.words || '500-800字';
     const avgWords = parseInt(wordCount.split('-')[0]) + 200;
     return formatCost(estimateScriptCost(avgWords));
-  }, [buildFormValues, estimateScriptCost, formatCost]);
+  }, [length, estimateScriptCost, formatCost]);
 
   // 生成脚本
   const handleGenerate = useCallback(
@@ -216,7 +218,7 @@ export function ScriptGenerator({
         setIsGenerating(false);
       }
     },
-    [selectedModel, isConfigured, onGenerate]
+    [selectedModel, isConfigured, onGenerate, buildFormValues]
   );
 
   // 保存脚本
@@ -301,7 +303,7 @@ export function ScriptGenerator({
         className={styles.form}
       >
         <CardBase title="脚本设置" className={styles.settingsCard}>
-          <label className="block text-sm font-medium mb-1">脚本主题</label>
+          <span className="block text-sm font-medium mb-1">脚本主题</span>
           <Input
             value={topic}
             onChange={(e) => setTopic(e.target.value)}
@@ -309,7 +311,7 @@ export function ScriptGenerator({
             prefix={<FileText />}
           />
 
-          <label className="block text-sm font-medium mb-1">关键词（可选）</label>
+          <span className="block text-sm font-medium mb-1">关键词（可选）</span>
           <Select
             value={keywords}
             mode="tags"
@@ -318,7 +320,7 @@ export function ScriptGenerator({
             onChange={(v) => setKeywords(v as string[])}
           />
 
-          <label className="block text-sm font-medium mb-1">脚本风格</label>
+          <span className="block text-sm font-medium mb-1">脚本风格</span>
           <RadioGroup optionType="button" buttonStyle="solid" value={style} onChange={setStyle}>
             {STYLE_OPTIONS.map((opt) => (
               <RadioButton key={opt.value} value={opt.value}>
@@ -327,7 +329,7 @@ export function ScriptGenerator({
             ))}
           </RadioGroup>
 
-          <label className="block text-sm font-medium mb-1">语气语调</label>
+          <span className="block text-sm font-medium mb-1">语气语调</span>
           <RadioGroup optionType="button" value={tone} onChange={setTone}>
             {TONE_OPTIONS.map((opt) => (
               <RadioButton key={opt.value} value={opt.value}>
@@ -336,7 +338,7 @@ export function ScriptGenerator({
             ))}
           </RadioGroup>
 
-          <label className="block text-sm font-medium mb-1">脚本长度</label>
+          <span className="block text-sm font-medium mb-1">脚本长度</span>
           <RadioGroup optionType="button" value={length} onChange={setLength}>
             {LENGTH_OPTIONS.map((opt) => (
               <RadioButton key={opt.value} value={opt.value}>
@@ -345,7 +347,7 @@ export function ScriptGenerator({
             ))}
           </RadioGroup>
 
-          <label className="block text-sm font-medium mb-1">目标受众</label>
+          <span className="block text-sm font-medium mb-1">目标受众</span>
           <Select
             value={audience}
             placeholder="选择目标受众"
@@ -353,13 +355,13 @@ export function ScriptGenerator({
             onChange={(v) => setAudience(v as string)}
           />
 
-          <label className="block text-sm font-medium mb-1">语言</label>
+          <span className="block text-sm font-medium mb-1">语言</span>
           <RadioGroup value={language} onChange={setLanguage}>
             <Radio value="zh">中文</Radio>
             <Radio value="en">English</Radio>
           </RadioGroup>
 
-          <label className="block text-sm font-medium mb-1">特殊要求（可选）</label>
+          <span className="block text-sm font-medium mb-1">特殊要求（可选）</span>
           <textarea
             rows={3}
             value={requirements}

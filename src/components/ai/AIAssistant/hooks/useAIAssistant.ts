@@ -8,7 +8,7 @@
  * - 无任何 JSX 直接渲染
  */
 
-import { useReducer, useCallback } from 'react';
+import { useReducer, useCallback, useMemo } from 'react';
 
 import type { ChatMessage, UseAIAssistantReturn } from '../types/ai-assistant-entities';
 
@@ -21,6 +21,7 @@ import {
 export function useAIAssistant(): UseAIAssistantReturn {
   // ── 18 个 useState 已迁移到 useReducer 状态机 (2026-06-11) ──
   const [state, dispatch] = useReducer(aiAssistantReducer, initialAIAssistantState);
+  const setters = useMemo(() => createAIAssistantSetters(dispatch), [dispatch]);
   const {
     setActiveTab,
     setPrompt,
@@ -40,7 +41,7 @@ export function useAIAssistant(): UseAIAssistantReturn {
     setSceneSensitivity,
     setProcessing,
     setProgress,
-  } = createAIAssistantSetters(dispatch);
+  } = setters;
 
   // 派生 state — 从 reducer state 拿
   const {
@@ -88,7 +89,7 @@ export function useAIAssistant(): UseAIAssistantReturn {
       setMessages((prev) => [...prev, aiResponse]);
       setProcessing(false);
     }, 1500);
-  }, [prompt]);
+  }, [prompt, setMessages, setProcessing, setPrompt]);
 
   /** 键盘事件处理 */
   const handleKeyPress = useCallback(
@@ -122,7 +123,7 @@ export function useAIAssistant(): UseAIAssistantReturn {
         setMessages((prev) => [...prev, resultMessage]);
       }
     }, 300);
-  }, []);
+  }, [setProcessing, setProgress, setMessages]);
 
   /** 智能剪辑 */
   const smartCut = useCallback(() => {
@@ -145,7 +146,7 @@ export function useAIAssistant(): UseAIAssistantReturn {
         setMessages((prev) => [...prev, resultMessage]);
       }
     }, 200);
-  }, []);
+  }, [setProcessing, setProgress, setMessages]);
 
   // ── Derived data (not state) ──────────────────────────────
 

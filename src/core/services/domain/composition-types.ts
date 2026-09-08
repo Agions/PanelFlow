@@ -11,6 +11,7 @@ import type {
   CompositionProject,
   TransitionConfig,
 } from '@/common/types';
+import { STORAGE_KEYS } from '@/core/constants/app-config';
 
 /** Composition 服务构造选项 */
 export interface CompositionServiceOptions {
@@ -58,8 +59,6 @@ export interface AnimationKeyframeInput {
   value: number;
   easing?: string;
 }
-
-import { STORAGE_KEYS } from '@/core/constants/app-config';
 
 /** localStorage 持久化键 */
 export const COMPOSITION_STORAGE_KEY = STORAGE_KEYS.COMPOSITIONS;

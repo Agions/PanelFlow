@@ -3,14 +3,15 @@
  * @module core/services/domain/manga-pipeline-types
  */
 
+import type { TTSConfig } from '@/common/types';
 import type {
   ImageGenerationOptions,
   VideoGenerationOptions,
 } from '@/core/services/ai/image/image-generation-service';
 import type { LipSyncOptions } from '@/core/services/audio/lip-sync-service';
 import type { SubtitleTrack, CompositionOptions } from '@/core/services/video/ffmpeg-wasm-service';
+
 export { DEFAULT_TTS_CONFIG } from '../audio/tts-types';
-import type { TTSConfig } from '@/common/types';
 
 /** 流水线配置 */
 export interface PipelineConfig {

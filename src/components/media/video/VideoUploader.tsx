@@ -3,11 +3,11 @@ import { open } from '@tauri-apps/plugin-dialog';
 import { Upload, Video } from 'lucide-react';
 import React, { useState, useRef } from 'react';
 
-import { logger } from '@/core/utils/logger';
 import { Button } from '@/common/components/ui/button';
 import { Progress } from '@/common/components/ui/progress';
 import { toast } from '@/common/components/ui/toast';
 import { delay } from '@/common/utils';
+import { logger } from '@/core/utils/logger';
 
 import styles from './VideoUploader.module.less';
 

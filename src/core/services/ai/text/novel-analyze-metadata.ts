@@ -13,9 +13,9 @@
  *   在"成功时返回什么、失败时返回什么"。
  */
 
+import type { NovelMetadata } from '@/common/types';
 import { aiService } from '@/core/services/ai/text/ai-service';
 import { logger } from '@/core/utils/logger';
-import type { NovelMetadata } from '@/common/types';
 
 import type { ResolvedAnalyzeConfig } from './novel-analyze-config';
 

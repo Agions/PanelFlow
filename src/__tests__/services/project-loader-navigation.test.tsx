@@ -6,8 +6,8 @@ import { renderHook, waitFor } from '@testing-library/react';
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 
-import { useProjectLoader } from '@/pages/project-edit/hooks/useProjectLoader';
 import { useProjectStore } from '@/common/stores/project-store';
+import { useProjectLoader } from '@/pages/project-edit/hooks/useProjectLoader';
 
 describe('Project Loader & Existing Project Entry Verification Suite', () => {
   beforeEach(() => {

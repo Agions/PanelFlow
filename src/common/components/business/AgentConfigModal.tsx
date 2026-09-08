@@ -7,8 +7,6 @@
 import { Bot, Plus } from 'lucide-react';
 import React, { useState } from 'react';
 
-import { agentRegistry } from '@/core/services/agent/AgentRegistry';
-import type { TriggerPhase } from '@/core/services/agent/BaseAgent';
 import { Button } from '@/common/components/ui/button';
 import {
   Dialog,
@@ -20,6 +18,8 @@ import {
 import { Input } from '@/common/components/ui/input';
 import { Textarea } from '@/common/components/ui/textarea';
 import { toast } from '@/common/components/ui/toast';
+import { agentRegistry } from '@/core/services/agent/AgentRegistry';
+import type { TriggerPhase } from '@/core/services/agent/BaseAgent';
 
 export interface AgentConfigModalProps {
   open: boolean;

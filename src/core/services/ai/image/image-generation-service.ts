@@ -22,8 +22,8 @@ export { generateVideoWithSeedance } from './image-generation/providers/seedance
 // Import from providers for unified API
 import axios from 'axios';
 
-import { logger } from '@/core/utils/logger';
 import { retryRequest } from '@/common/utils';
+import { logger } from '@/core/utils/logger';
 
 import { generateWithKling, generateVideoWithKling } from './image-generation/providers/kling';
 import { generateVideoWithSeedance } from './image-generation/providers/seedance';

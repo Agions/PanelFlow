@@ -2,9 +2,9 @@
  * 小说分析服务测试
  */
 
+import { EmotionType } from '@/common/types';
 import { aiService } from '@/core/services/ai/text/ai-service';
 import { novelAnalyzer } from '@/core/services/ai/text/novel-analyze-service';
-import { EmotionType } from '@/common/types';
 
 // Mock AI 服务
 jest.mock('@/core/services/ai/text/ai-service', () => ({

@@ -17,7 +17,6 @@ import {
 } from 'lucide-react';
 import React, { useState, useTransition } from 'react';
 
-import { scriptImportService, tauriService } from '@/core/services';
 import { Loading } from '@/common/components/ui';
 import { Alert, AlertDescription } from '@/common/components/ui/alert';
 import { Badge } from '@/common/components/ui/badge';
@@ -25,6 +24,7 @@ import { Button } from '@/common/components/ui/button';
 import { toast } from '@/common/components/ui/toast';
 import type { ScriptChapter, ScriptSource, ScriptValidationResult } from '@/common/types';
 import { handleAsyncError } from '@/common/utils/async';
+import { scriptImportService, tauriService } from '@/core/services';
 
 import styles from './NovelImporter.module.less';
 

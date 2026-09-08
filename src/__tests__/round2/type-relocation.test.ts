@@ -7,8 +7,8 @@
 //   1. The new location still exports the symbol.
 //   2. The `@/common/types` barrel successfully re-exports it (identity check).
 
-import * as NovelTypes from '@/core/script/types/novel';
 import * as SharedTypes from '@/common/types';
+import * as NovelTypes from '@/core/script/types/novel';
 
 describe('type relocation', () => {
   it('shared/types re-exports core/<domain>/types', () => {

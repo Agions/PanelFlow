@@ -8,6 +8,7 @@
  * 静态方法从类中剥离到独立模块，使主类瘦身为纯状态管理。
  */
 
+import type { Character, CharacterAppearance } from '@/common/types';
 import {
   CHARACTER_TEMPLATES,
   getTemplateById,
@@ -15,7 +16,6 @@ import {
   type CharacterTemplate,
 } from '@/core/data/character-templates';
 import { logger } from '@/core/utils/logger';
-import type { Character, CharacterAppearance } from '@/common/types';
 
 /** createFromTemplate 的 overrides 类型（与原类签名完全一致） */
 export type CharacterTemplateOverrides = Partial<

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 
+import { useProjectStore } from '@/common/stores/project-store';
 import type { AudioTrackConfig } from '@/core/audio/types/audio';
 import type { CompositionProject } from '@/core/audio/types/composition';
 import type { ProjectData } from '@/core/project/types/project';
@@ -59,11 +60,9 @@ export function useProjectLoader(projectId: string | undefined): {
     let cancelled = false;
     const timer = setTimeout(() => {
       const loadFromStore = () => {
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
-        const { useProjectStore } = require('@/common/stores/project-store');
         const storeState = useProjectStore.getState();
         const fallbackProject =
-          storeState.projects.find((p: any) => String(p.id) === String(projectId)) ||
+          storeState.projects.find((p) => String(p.id) === String(projectId)) ||
           storeState.currentProject;
 
         if (fallbackProject && !cancelled) {
@@ -80,20 +79,25 @@ export function useProjectLoader(projectId: string | undefined): {
             }
           }
 
+          const legacyFallback = fallbackProject as unknown as {
+            novelText?: string;
+            parsedScenes?: unknown[];
+          };
+
           setData({
             name: fallbackProject.name || '未命名漫剧工程',
             description: fallbackProject.description ?? '',
-            content: fallbackProject.content || fallbackProject.novelText,
-            novelMetadata: fallbackProject.novelMetadata,
-            storyAnalysis: fallbackProject.storyAnalysis,
-            storyboardFrames: fallbackProject.storyboardFrames || fallbackProject.parsedScenes,
+            content: fallbackProject.content || legacyFallback.novelText,
+            novelMetadata: fallbackProject.novelMetadata as ScriptImportMetadata | undefined,
+            storyAnalysis: fallbackProject.storyAnalysis as StoryAnalysis | undefined,
+            storyboardFrames: fallbackProject.storyboardFrames || legacyFallback.parsedScenes,
             storyboardComments: fallbackProject.storyboardComments,
             storyboardVersions: fallbackProject.storyboardVersions,
             audioConfig: fallbackProject.audioConfig,
             characters: fallbackProject.characters,
             composition: fallbackProject.composition,
-            script: fallbackProject.script || fallbackProject.novelText,
-            exportPreset: fallbackProject.exportPreset || '16:9',
+            script: fallbackProject.script || legacyFallback.novelText,
+            exportPreset: (fallbackProject.exportPreset as '9:16' | '16:9' | '1:1') || '16:9',
             exportSettings: fallbackProject.exportSettings,
             initialStep,
             frameId: frameId ?? undefined,

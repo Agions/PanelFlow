@@ -13,13 +13,13 @@
  * 单一职责：把原始文本切成 Chapter[]。
  */
 
+import type { Chapter } from '@/common/types';
 import {
   extractCharacterNames,
   extractLocations,
   extractTimePeriod,
   CHAPTER_PATTERNS,
 } from '@/core/services/ai/text/novel-helpers';
-import type { Chapter } from '@/common/types';
 
 import type { ResolvedAnalyzeConfig } from './novel-analyze-config';
 

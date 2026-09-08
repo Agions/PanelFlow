@@ -9,10 +9,6 @@ import { convertFileSrc } from '@tauri-apps/api/core';
 import { Sparkles } from 'lucide-react';
 import { useState, useMemo } from 'react';
 
-import { ExportMenu } from '@/components/ai/ExportMenu';
-import { SegmentTable } from '@/components/ai/SegmentTable';
-import { tauriService } from '@/core/services';
-import { logger } from '@/core/utils/logger';
 import { Button } from '@/common/components/ui/button';
 import { Card } from '@/common/components/ui/card';
 import {
@@ -33,6 +29,10 @@ import {
 import { toast } from '@/common/components/ui/toast';
 import type { VideoSegment } from '@/common/types/script';
 import { formatDurationShort } from '@/common/utils';
+import { ExportMenu } from '@/components/ai/ExportMenu';
+import { SegmentTable } from '@/components/ai/SegmentTable';
+import { tauriService } from '@/core/services';
+import { logger } from '@/core/utils/logger';
 import { theme } from '@/styles/theme';
 
 import styles from './ScriptEditor.module.less';

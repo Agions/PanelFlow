@@ -2,13 +2,13 @@
  * 分镜服务测试 - Storyboard Service Tests
  */
 
+import type { StoryboardFrame } from '@/common/types/storyboard';
 import {
   StoryboardService,
   resetStoryboardService,
   getStoryboardService,
 } from '@/core/services/storyboard-service';
 import type { ScriptImportMetadata } from '@/features/storyboard/components/NovelImporter';
-import type { StoryboardFrame } from '@/common/types/storyboard';
 
 // Mock uuid
 jest.mock('uuid', () => ({

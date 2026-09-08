@@ -3,12 +3,6 @@
  * 测试 AI 视频分析服务的各项功能
  */
 
-import { aiService } from '@/core/services/ai/text/ai-service';
-import {
-  videoAnalysisService,
-  DEFAULT_ANALYSIS_CONFIG,
-  SCENE_TYPES,
-} from '@/core/services/video/video-analysis-service';
 import type {
   VideoInfo,
   VideoAnalysis,
@@ -17,6 +11,12 @@ import type {
   ObjectDetection,
   EmotionAnalysis,
 } from '@/common/types';
+import { aiService } from '@/core/services/ai/text/ai-service';
+import {
+  videoAnalysisService,
+  DEFAULT_ANALYSIS_CONFIG,
+  SCENE_TYPES,
+} from '@/core/services/video/video-analysis-service';
 
 // Mock uuid
 jest.mock('uuid', () => ({

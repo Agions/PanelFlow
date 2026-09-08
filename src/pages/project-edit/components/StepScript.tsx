@@ -6,11 +6,11 @@
 import { Film, Plus, Trash2, ArrowRight, ArrowLeft, Camera } from 'lucide-react';
 import React, { useState } from 'react';
 
-import { useProject } from '@/core/hooks/useProject';
 import { Badge } from '@/common/components/ui/badge';
 import { Button } from '@/common/components/ui/button';
 import { Card } from '@/common/components/ui/card';
 import { Input } from '@/common/components/ui/input';
+import { useProject } from '@/core/hooks/useProject';
 
 const INITIAL_SHOTS = [
   {

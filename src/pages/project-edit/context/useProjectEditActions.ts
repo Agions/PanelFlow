@@ -94,12 +94,17 @@ export function useProjectEditActions(params: UseProjectEditActionsParams): Proj
     storyboard,
     novelMetadata,
     storyAnalysis,
+    analysisDraft,
+    commentDraft,
+    versionLabel,
     audioConfig,
     characters,
     composition,
     projectMetadata,
     startTransition,
   } = params;
+
+  const projectId = project?.id;
 
   // scriptText bridge for useScriptStep
   const scriptTextRef = useRef('');
@@ -125,7 +130,16 @@ export function useProjectEditActions(params: UseProjectEditActionsParams): Proj
       storyboard.setCompareRight(undefined);
       storyboard.setVersionDiff(null);
     },
-    [storyboard]
+    [
+      storyboard,
+      setContent,
+      setNovelMetadata,
+      setStoryAnalysis,
+      setAnalysisDraft,
+      setAnalysisState,
+      setCommentDraft,
+      setVersionLabel,
+    ]
   );
 
   const removeContent = useCallback(() => {
@@ -137,7 +151,15 @@ export function useProjectEditActions(params: UseProjectEditActionsParams): Proj
     setAnalysisState('idle');
     setAudioConfig(initialProjectEditState.audioConfig);
     scriptTextRef.current = '';
-  }, [storyboard]);
+  }, [
+    storyboard,
+    setContent,
+    setNovelMetadata,
+    setStoryAnalysis,
+    setAnalysisDraft,
+    setAnalysisState,
+    setAudioConfig,
+  ]);
 
   // ─── AI Analysis ──────────────────────────────────────────────────────────
   const buildStoryboardDraft = useCallback((analysis: StoryAnalysis): StoryboardFrame[] => {
@@ -177,7 +199,7 @@ export function useProjectEditActions(params: UseProjectEditActionsParams): Proj
         provider: 'alibaba',
         model: 'qwen-3.5',
         maxRetries: 2,
-        projectId: project?.id,
+        projectId,
       });
       setStoryAnalysis(analyzed);
       setAnalysisDraft(JSON.stringify(analyzed, null, 2));
@@ -189,15 +211,15 @@ export function useProjectEditActions(params: UseProjectEditActionsParams): Proj
     } finally {
       setLoading(false);
     }
-  }, [content, project?.id]);
+  }, [content, projectId, setLoading, setStoryAnalysis, setAnalysisDraft, setAnalysisState]);
 
   const acceptAnalysis = useCallback(async () => {
-    if (!params.analysisDraft.trim()) {
+    if (!analysisDraft.trim()) {
       toast.error('请先生成解析结果');
       return;
     }
     try {
-      const parsed = JSON.parse(params.analysisDraft) as StoryAnalysis;
+      const parsed = JSON.parse(analysisDraft) as StoryAnalysis;
       setStoryAnalysis(parsed);
       setAnalysisState('accepted');
       if (storyboard.frames.length === 0) {
@@ -223,35 +245,45 @@ export function useProjectEditActions(params: UseProjectEditActionsParams): Proj
     } finally {
       setLoading(false);
     }
-  }, [params.analysisDraft, storyboard, buildStoryboardDraft, setCurrentStep, setScriptTextBridge]);
+  }, [
+    analysisDraft,
+    storyboard,
+    buildStoryboardDraft,
+    setCurrentStep,
+    setScriptTextBridge,
+    setStoryAnalysis,
+    setAnalysisState,
+    setLoading,
+    startTransition,
+  ]);
 
   // ─── Storyboard Collaboration ─────────────────────────────────────────────
   const addFrameComment = useCallback(() => {
-    if (!project?.id || !storyboard.selectedFrame || !params.commentDraft.trim()) return;
+    if (!projectId || !storyboard.selectedFrame || !commentDraft.trim()) return;
     collaborationService.addComment({
-      projectId: project.id,
+      projectId,
       frameId: storyboard.selectedFrame.id,
-      content: params.commentDraft.trim(),
+      content: commentDraft.trim(),
       author: 'current-user',
     });
-    storyboard.setComments(collaborationService.listComments(project.id));
+    storyboard.setComments(collaborationService.listComments(projectId));
     setCommentDraft('');
-  }, [project?.id, storyboard, params.commentDraft]);
+  }, [projectId, storyboard, commentDraft, setCommentDraft]);
 
   const saveStoryboardVersion = useCallback(() => {
-    if (!project?.id) return;
+    if (!projectId) return;
     collaborationService.saveVersion({
-      projectId: project.id,
-      label: params.versionLabel.trim() ?? `版本-${new Date().toLocaleString()}`,
+      projectId,
+      label: versionLabel.trim() || `版本-${new Date().toLocaleString()}`,
       createdBy: 'current-user',
       payload: storyboard.frames,
     });
-    const versions = collaborationService.listVersions(project.id);
+    const versions = collaborationService.listVersions(projectId);
     storyboard.setVersions(versions);
     setVersionLabel('');
     storyboard.setCompareLeft(versions[versions.length - 1]?.id);
     toast.success('已保存分镜版本快照');
-  }, [project?.id, params.versionLabel, storyboard]);
+  }, [projectId, versionLabel, storyboard, setVersionLabel]);
 
   const compareVersions = useCallback(() => {
     if (!storyboard.compareLeftVersionId || !storyboard.compareRightVersionId) {
@@ -266,18 +298,18 @@ export function useProjectEditActions(params: UseProjectEditActionsParams): Proj
   }, [storyboard]);
 
   const rollbackVersion = useCallback(() => {
-    if (!project?.id || !storyboard.compareLeftVersionId) {
+    if (!projectId || !storyboard.compareLeftVersionId) {
       toast.warning('请选择要回滚的版本');
       return;
     }
-    const payload = collaborationService.rollback(project.id, storyboard.compareLeftVersionId);
+    const payload = collaborationService.rollback(projectId, storyboard.compareLeftVersionId);
     if (Array.isArray(payload)) {
       storyboard.setFrames(payload as StoryboardFrame[]);
       toast.success('已回滚到所选版本');
       return;
     }
     toast.error('回滚失败，未找到对应版本');
-  }, [project?.id, storyboard]);
+  }, [projectId, storyboard]);
 
   const handleBuildStoryboardDraft = useCallback(() => {
     if (storyAnalysis) {
@@ -288,11 +320,11 @@ export function useProjectEditActions(params: UseProjectEditActionsParams): Proj
   // ─── Generic Version Control ──────────────────────────────────────────────
   const saveVersionByType = useCallback(
     (contentType: string, data: unknown, label?: string) => {
-      if (!project?.id) return;
+      if (!projectId) return;
       collaborationService.saveVersionByType(
         {
-          projectId: project.id,
-          label: label ?? `版本-${new Date().toLocaleString()}`,
+          projectId,
+          label: label || `版本-${new Date().toLocaleString()}`,
           createdBy: 'current-user',
           payload: data,
         },
@@ -300,18 +332,18 @@ export function useProjectEditActions(params: UseProjectEditActionsParams): Proj
       );
       toast.success('版本快照已保存');
     },
-    [project?.id]
+    [projectId]
   );
 
   const listVersionsByType = useCallback(
     (contentType: string) => {
-      if (!project?.id) return [];
+      if (!projectId) return [];
       return collaborationService.listVersionsByType(
-        project.id,
+        projectId,
         contentType as 'storyboard' | 'script' | 'character' | 'asset'
       );
     },
-    [project?.id]
+    [projectId]
   );
 
   const compareVersionsByType = useCallback((leftId: string, rightId: string) => {
@@ -320,10 +352,10 @@ export function useProjectEditActions(params: UseProjectEditActionsParams): Proj
 
   const rollbackVersionByType = useCallback(
     (_contentType: string, versionId: string) => {
-      if (!project?.id) return null;
-      return collaborationService.rollback(project.id, versionId);
+      if (!projectId) return null;
+      return collaborationService.rollback(projectId, versionId);
     },
-    [project?.id]
+    [projectId]
   );
 
   // ─── Render ───────────────────────────────────────────────────────────────
@@ -333,7 +365,7 @@ export function useProjectEditActions(params: UseProjectEditActionsParams): Proj
         prev.map((frame) => (frame.id === frameId ? { ...frame, imageUrl } : frame))
       );
     },
-    [storyboard.setFrames]
+    [storyboard]
   );
 
   // ─── Audio ────────────────────────────────────────────────────────────────
@@ -349,7 +381,7 @@ export function useProjectEditActions(params: UseProjectEditActionsParams): Proj
       const result = await audioPipelineService.generateVoiceTracks(
         currentScriptText,
         storyAnalysis,
-        { maxLines: 20, projectId: project?.id }
+        { maxLines: 20, projectId }
       );
       setAudioConfig((prev) => ({
         ...prev,
@@ -369,7 +401,7 @@ export function useProjectEditActions(params: UseProjectEditActionsParams): Proj
     } finally {
       setAudioGenerating(false);
     }
-  }, [storyAnalysis, project?.id]);
+  }, [storyAnalysis, projectId, setAudioConfig, setAudioEditorKey, setAudioGenerating]);
 
   // ─── Save / Export ────────────────────────────────────────────────────────
   const saveProject = useCallback(async () => {
@@ -482,7 +514,7 @@ export function useProjectEditActions(params: UseProjectEditActionsParams): Proj
       const frameIndex = typeof issue.frameIndex === 'number' ? issue.frameIndex + 1 : undefined;
       toast.success(`已定位到${frameIndex ? `第 ${frameIndex} 镜` : '目标分镜'}`);
     },
-    [storyboard.frames, setCurrentStep]
+    [storyboard.frames, setCurrentStep, setFocusFrameId, startTransition]
   );
 
   const exportScript = useCallback((format: string) => {

@@ -6,9 +6,9 @@
  * - pipeline-middleware.ts: Logger + Metrics 中间件
  * - 本文件：引擎核心类 + 工厂函数
  */
+import { delay } from '@/common/utils/timing';
 import { secureStorage } from '@/core/services/project/secure-storage-service';
 import { logger } from '@/core/utils/logger';
-import { delay } from '@/common/utils/timing';
 
 import type {
   PipelineEngineEventHandler,

@@ -10,11 +10,11 @@ import {
 } from 'lucide-react';
 import React, { useState } from 'react';
 
-import { verifyModelApiKey } from '@/core/config/model-providers';
-import { tauriService } from '@/infrastructure/tauri-bridge/commands';
 import { Button } from '@/common/components/ui/button';
 import { Input } from '@/common/components/ui/input';
 import { toast } from '@/common/components/ui/toast';
+import { verifyModelApiKey } from '@/core/config/model-providers';
+import { tauriService } from '@/infrastructure/tauri-bridge/commands';
 
 /**
  * 各家只保留最新 2 款旗舰模型，涵盖文字、图像、视频与语音四大全套 API Key 配置
@@ -161,7 +161,7 @@ const SettingsPage = () => {
             keyVal = s1;
           } else if (s2) {
             try {
-              const parsed = JSON.parse(s2);
+              const parsed = JSON.parse(s2) as { apiKey?: string };
               if (parsed?.apiKey) keyVal = parsed.apiKey;
             } catch (_e) {
               keyVal = s2;
